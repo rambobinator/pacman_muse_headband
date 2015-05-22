@@ -50,3 +50,11 @@ void		Map::display(void)
 		std::cout << *it << std::endl;
 }
 
+char		Map::colision(int y, int x)
+{
+	return (_raw_map[y].at(x));
+}
+
+int			Map::getX(void) const {return(_tile_sz_x);}
+int			Map::getY(void) const {return(_tile_sz_y);}
+std::vector<std::string>	Map::getRawMap(void) const {return(_raw_map);}
