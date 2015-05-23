@@ -237,6 +237,7 @@ void	Enemy::ia(void)
 	int	new_dir = Astar();
 
 	dir = (new_dir != -1) ? new_dir : getDir();
+	std::cout << "new_dir: " << new_dir << std::endl;
 	if (dir != -1)
 		move();
 }
