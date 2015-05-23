@@ -64,7 +64,7 @@ Tab		min_tab(Tab tab0, Tab tab1, Tab tab2, Tab tab3)
 	if (tab0.size == -1)
 		min1 = tab1;
 	else if (tab1.size == -1)
-		min1 = tab2;
+		min1 = tab0;
 	else if (tab0.size <= tab1.size)
 		min1 = tab0;
 	else
@@ -79,14 +79,35 @@ Tab		min_tab(Tab tab0, Tab tab1, Tab tab2, Tab tab3)
 	else
 		min2 = tab3;
 
-	if (min1.size == -1)
+	if (min1.size == -1){
+		// std::cout << "size " <<min2.size << std::endl;
 		return (min2);
-	else if (min2.size == -1)
+	}
+	else if (min2.size == -1){
+		// std::cout << "size " <<min1.size << std::endl;
 		return (min1);
-	else if (min1.size <= min2.size)
+	}
+	else if (min1.size <= min2.size){
+		// std::cout << "size " <<min1.size << std::endl;
 		return (min1);
-	else
+	}
+	else{
+		// std::cout << "size " <<min2.size << std::endl;
 		return (min2);
+	}
+}
+
+void	print_tab(Tab tab)
+{
+	int		i;
+
+	i = 0;
+	while (i < tab.size)
+	{
+		std::cout << tab.tab[i].x << "," << tab.tab[i].y << " ";
+		i++;
+	}
+	std::cout << std::endl;
 }
 
 Tab		rec_dir(Tab tab, Point now, Point pac, int (*zone)[RANGE][RANGE])
@@ -169,11 +190,11 @@ int		Enemy::Astar(void)
 	result = rec_dir(start, tmp, pac, &zone);
 	if (result.size == -1)
 		return (-1);
-	else if (result.tab[0].x - RANGE / 2 > 0)
+	else if (result.tab[1].x - (RANGE / 2) > 0)
 		return (1);
-	else if (result.tab[0].x - RANGE / 2 < 0)
+	else if (result.tab[1].x - (RANGE / 2) < 0)
 		return (3);
-	else if (result.tab[0].y - RANGE / 2 > 0)
+	else if (result.tab[1].y - (RANGE / 2) > 0)
 		return (2);
 	else
 		return (0);
@@ -237,7 +258,6 @@ void	Enemy::ia(void)
 	int	new_dir = Astar();
 
 	dir = (new_dir != -1) ? new_dir : getDir();
-	std::cout << "new_dir: " << new_dir << std::endl;
 	if (dir != -1)
 		move();
 }
