@@ -13,6 +13,8 @@ class Player
 		int				x;
 		int				y;
 		int				dir;
+		bool			blink;
+		bool			berseck;
 		Map				*map;
 		void			setDir(int new_dir);
 		void			move(void);

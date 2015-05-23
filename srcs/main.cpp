@@ -15,7 +15,9 @@ int		main(int ac, char **av)
 		return (-1);
 	Map 						map(av[1]);
 	Player						p(1,1, &map);
-	Enemy						e1(1, 3, &map);
+	Enemy						e1(1, 3, &map, &p);
+
+	// Enemy						e2(13, 1, &map);
 
 	raw_map = map.getRawMap();
 	sf::Vector2f position = rectangle.getPosition();
@@ -47,6 +49,11 @@ int		main(int ac, char **av)
 					rectangle.setFillColor(sf::Color(250, 0, 0));
 					window.draw(rectangle);
 				}
+				// if (y == e2.y && x == e2.x)
+				// {
+				// 	rectangle.setFillColor(sf::Color(250, 0, 0));
+				// 	window.draw(rectangle);
+				// }
 				rectangle.move(map.getX(), 0);
 			}
 			rectangle.move(-(map.getX() * x), map.getY());
@@ -75,8 +82,14 @@ int		main(int ac, char **av)
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 				p.setDir(2);
 		}
+		/*MUSE EVENT*/
+
+
+
+		
 		p.move();
 		e1.ia();
+		// e2.ia();
 		window.display();
 		sf::sleep(sf::milliseconds(100));
 	}
