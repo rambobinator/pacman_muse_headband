@@ -11,6 +11,9 @@
 #define WALL 7
 #define ME 9
 #define BAD1 0
+#define BAD2 1
+#define BAD3 2
+#define BAD4 3
 
 void	thread(void)
 {
@@ -18,6 +21,7 @@ void	thread(void)
 }
 
 int		g_blink = 0;
+int		g_berserk = 0;
 
 static sf::Sprite	*get_sprites(char const *file, int x_max, int y_max, int s_x, int s_y)
 {
@@ -57,8 +61,10 @@ int		main(int ac, char **av)
 	(void)characters;
 	Player						p(1,1, &map);
 	Enemy						e1(1, 3, &map, &p);
-
+	Enemy						e2(13, 1, &map, &p);
 	// Enemy						e2(13, 1, &map);
+	// Enemy						e2(13, 1, &map);
+
 
 	raw_map = map.getRawMap();
 	sf::Vector2f position = rectangle.getPosition();
@@ -70,6 +76,10 @@ int		main(int ac, char **av)
 		characters[ME].setPosition(position);
 		characters[ME].setRotation(0);
 		characters[BAD1].setPosition(position);
+		characters[BAD2].setPosition(position);
+		characters[BAD3].setPosition(position);
+		characters[BAD4].setPosition(position);
+
 		window.clear();
 
 		/*DRAW MAP*/
@@ -93,6 +103,11 @@ int		main(int ac, char **av)
 				{
 					characters[BAD1].move(map.getX() * x, map.getY() * y);
 					window.draw(characters[BAD1]);
+				}
+				if (y == e2.y && x == e2.x)
+				{
+					characters[BAD2].move(map.getX() * x, map.getY() * y);
+					window.draw(characters[BAD2]);
 				}
 				characters[WALL].move(map.getX(), 0);
 				rectangle.move(map.getX(), 0);
@@ -120,7 +135,9 @@ int		main(int ac, char **av)
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				p.setDir(3);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
 				p.setDir(1);
+			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				p.setDir(0);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -133,7 +150,7 @@ int		main(int ac, char **av)
 		
 		p.move();
 		e1.ia();
-		// e2.ia();
+		e2.ia();
 		window.display();
 		sf::sleep(sf::milliseconds(100));
 	}
