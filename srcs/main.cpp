@@ -93,7 +93,6 @@ int		main(int ac, char **av)
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
 				p.setDir(1);
-				std::cout << "Berserk: " << g_berserk << std::endl;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				p.setDir(0);
