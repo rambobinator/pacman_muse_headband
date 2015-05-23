@@ -1,6 +1,7 @@
 #include "../includes/LibSFML.hpp"
 #include "map.hpp"
 #include "Player.hpp"
+#include "Enemy.hpp"
 
 int		main(int ac, char **av)
 {
@@ -14,6 +15,7 @@ int		main(int ac, char **av)
 		return (-1);
 	Map 						map(av[1]);
 	Player						p(1,1, &map);
+	Enemy						e1(1, 3, &map);
 
 	raw_map = map.getRawMap();
 	sf::Vector2f position = rectangle.getPosition();
@@ -38,6 +40,11 @@ int		main(int ac, char **av)
 				if (y == p.y && x == p.x)
 				{
 					rectangle.setFillColor(sf::Color(100, 250, 50));
+					window.draw(rectangle);
+				}
+				if (y == e1.y && x == e1.x)
+				{
+					rectangle.setFillColor(sf::Color(250, 0, 0));
 					window.draw(rectangle);
 				}
 				rectangle.move(map.getX(), 0);
@@ -69,6 +76,7 @@ int		main(int ac, char **av)
 				p.setDir(2);
 		}
 		p.move();
+		e1.ia();
 		window.display();
 		sf::sleep(sf::milliseconds(100));
 	}

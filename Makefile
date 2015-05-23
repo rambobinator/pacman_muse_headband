@@ -1,7 +1,9 @@
 NAME = pacman
 SRC = 	srcs/main.cpp \
 		srcs/map.cpp \
-		srcs/player.cpp
+		srcs/player.cpp \
+		srcs/enemy.cpp
+
 CC = clang++
 CFLAGS = -stdlib=libc++ -Wall -Wextra -Werror
 COMPILED_OBJ = $(SRC:.cpp=.o)
