@@ -4,8 +4,16 @@ SRC = 	srcs/main.cpp \
 		srcs/player.cpp \
 		srcs/enemy.cpp
 
+OSC = 	osc/tests/OscReceiveTest.o \
+		osc/osc/OscTypes.o \
+		osc/osc/OscReceivedElements.o \
+		osc/osc/OscPrintReceivedElements.o \
+		osc/ip/posix/UdpSocket.o \
+		osc/ip/IpEndpointName.o \
+		osc/ip/posix/NetworkingUtils.o
+
 CC = clang++
-CFLAGS = -stdlib=libc++ -Wall -Wextra -Werror
+CFLAGS = -stdlib=libc++ -Wall -Wextra -Werror -g
 COMPILED_OBJ = $(SRC:.cpp=.o)
 SFML = SFML2
 
@@ -23,8 +31,11 @@ COMPILED_FRAMEWORKS = $(shell for f in $(FRAMEWORKS); do echo '-framework '$$f; 
 
 all: $(NAME)
 
-$(NAME): $(SFML) $(COMPILED_OBJ)
-	$(CC) $(CFLAGS) -o $@ $(COMPILED_OBJ) $(COMPILED_LIBS_DIRS) $(COMPILED_LIBS) $(COMPILED_FRAMEWORKS) /usr/X11/lib/libfreetype.6.dylib
+$(NAME): $(SFML) $(COMPILED_OBJ) $(OSC)
+	$(CC) $(CFLAGS) -o $@ $(COMPILED_OBJ) $(OSC) $(COMPILED_LIBS_DIRS) $(COMPILED_LIBS) $(COMPILED_FRAMEWORKS) /usr/X11/lib/libfreetype.6.dylib
+
+$(OSC):
+	make -C osc
 
 %.o: %.cpp $(COMPILED_HEADERS)
 	$(CC) $(CFLAGS) $(COMPILED_INCLUDE_DIRS) -o $@ -c $<

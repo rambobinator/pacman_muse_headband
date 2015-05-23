@@ -60,14 +60,7 @@ protected:
     void ProcessMessage( const osc::ReceivedMessage& m, 
             const IpEndpointName& remoteEndpoint )
     {
-        (void) remoteEndpoint; // suppress unused parameter warning
-
-        // a more complex scheme involving std::map or some other method of
-        // processing address patterns could be used here 
-		// (see MessageMappingOscPacketListener.h for example). however, the main
-        // purpose of this example is to illustrate and test different argument
-        // parsing methods
-
+        (void) remoteEndpoint;
         try {
             // argument stream, and argument iterator, used in different
             // examples below.
@@ -75,162 +68,27 @@ protected:
             // ReceivedMessage::const_iterator arg = m.ArgumentsBegin();
             
             if( std::strcmp( m.AddressPattern(), "/muse/elements/blink" ) == 0 ){
-
-                // example #1:
-                // parse an expected format using the argument stream interface:
-                // float a;
                 int     a;
-                int     lala;
-                lala = 1;
+
                 args >> a >> osc::EndMessage;
 
-                std::cout << "received '/concentration' message with arguments: "
+                std::cout << "received '/blink' message with arguments: "
                         << a << "\n";
-
             }
-            // }else if( std::strcmp( m.AddressPattern(), "/test2" ) == 0 ){
+            else if (std::strcmp( m.AddressPattern(), "/muse/elements/experimental/concentration" ) == 0){
+                float   f;
 
-            //     // example #2:
-            //     // parse an expected format using the argument iterator interface
-            //     // this is a more complicated example of doing the same thing
-            //     // as above.
-            //     bool a1 = (arg++)->AsBool();
-            //     int a2 = (arg++)->AsInt32();
-            //     float a3 = (arg++)->AsFloat();
-            //     const char *a4 = (arg++)->AsString();
-            //     if( arg != m.ArgumentsEnd() )
-            //         throw ExcessArgumentException();
+                args >> f >> osc::EndMessage;
+                std::cout << "received '/concentration' message with arguments: "
+                        << f << "\n";
+            }
+            else if (std::strcmp( m.AddressPattern(), "/muse/elements/experimental/mellow" ) == 0){
+                float   f;
 
-            //     std::cout << "received '/test2' message with arguments: "
-            //              << a1 << " " << a2 << " " << a3 << " " << a4 << "\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/test3" ) == 0 ){
-
-            //     // example #3:
-            //     // parse a variable argument format using the argument iterator
-            //     // interface. this is where it is necessary to use
-            //     // argument iterators instead of streams.
-            //     // When messages may contain arguments of varying type, you can
-            //     // use the argument iterator interface to query the types at
-            //     // runtime. this is more flexible that the argument stream
-            //     // interface, which requires each argument to have a fixed type
-                
-            //     if( arg->IsBool() ){
-            //         bool a = (arg++)->AsBoolUnchecked();
-            //         std::cout << "received '/test3' message with bool argument: "
-            //             << a << "\n";
-            //     }else if( arg->IsInt32() ){
-            //         int a = (arg++)->AsInt32Unchecked();
-            //         std::cout << "received '/test3' message with int32 argument: "
-            //             << a << "\n";
-            //     }else if( arg->IsFloat() ){
-            //         float a = (arg++)->AsFloatUnchecked();
-            //         std::cout << "received '/test3' message with float argument: "
-            //             << a << "\n";
-            //     }else if( arg->IsString() ){
-            //         const char *a = (arg++)->AsStringUnchecked();
-            //         std::cout << "received '/test3' message with string argument: '"
-            //             << a << "'\n";
-            //     }else{
-            //         std::cout << "received '/test3' message with unexpected argument type\n";
-            //     }
-                
-            //     if( arg != m.ArgumentsEnd() )
-            //         throw ExcessArgumentException();
-
-                    
-            // }else if( std::strcmp( m.AddressPattern(), "/no_arguments" ) == 0 ){
-
-            //     args >> osc::EndMessage;
-            //     std::cout << "received '/no_arguments' message\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/a_bool" ) == 0 ){
-
-            //     bool a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/a_bool' message: " << a << "\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/nil" ) == 0 ){
-
-            //     std::cout << "received '/nil' message\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/inf" ) == 0 ){
-
-            //     std::cout << "received '/inf' message\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/an_int" ) == 0 ){
-
-            //     osc::int32 a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/an_int' message: " << a << "\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/a_float" ) == 0 ){
-
-            //     float a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/a_float' message: " << a << "\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/a_char" ) == 0 ){
-
-            //     char a;
-            //     args >> a >> osc::EndMessage;
-            //     char s[2] = {0};
-            //     s[0] = a;
-            //     std::cout << "received '/a_char' message: '" << s << "'\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/an_rgba_color" ) == 0 ){
-
-            //     osc::RgbaColor a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/an_rgba_color' message: " << a.value << "\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/a_midi_message" ) == 0 ){
-
-            //     osc::MidiMessage a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/a_midi_message' message: " << a.value << "\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/an_int64" ) == 0 ){
-
-            //     osc::int64 a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/an_int64' message: " << a << "\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/a_time_tag" ) == 0 ){
-
-            //     osc::TimeTag a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/a_time_tag' message: " << a.value << "\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/a_double" ) == 0 ){
-
-            //     double a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/a_double' message: " << a << "\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/a_string" ) == 0 ){
-
-            //     const char *a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/a_string' message: '" << a << "'\n";
-
-            // }else if( std::strcmp( m.AddressPattern(), "/a_symbol" ) == 0 ){
-
-            //     osc::Symbol a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/a_symbol' message: '" << a.value << "'\n";
-
-            //  }else if( std::strcmp( m.AddressPattern(), "/a_blob" ) == 0 ){
-
-            //     osc::Blob a;
-            //     args >> a >> osc::EndMessage;
-            //     std::cout << "received '/a_blob' message\n";
-
-            // }else{
-            //     std::cout << "unrecognised address pattern: "
-            //             << m.AddressPattern() << "\n";
-            // }
-
+                args >> f >> osc::EndMessage;
+                std::cout << "received '/mellow' message with arguments: "
+                        << f << "\n";
+            }
         }catch( Exception& e ){
             std::cout << "error while parsing message: "
                         << m.AddressPattern() << ": " << e.what() << "\n";
@@ -258,22 +116,22 @@ void RunReceiveTest( int port )
 
 #ifndef NO_OSC_TEST_MAIN
 
-int main(int argc, char* argv[])
-{
-	if( argc >= 2 && std::strcmp( argv[1], "-h" ) == 0 ){
-        std::cout << "usage: OscReceiveTest [port]\n";
-        return 0;
-    }
+// int main(int argc, char* argv[])
+// {
+// 	if( argc >= 2 && std::strcmp( argv[1], "-h" ) == 0 ){
+//         std::cout << "usage: OscReceiveTest [port]\n";
+//         return 0;
+//     }
 
-	int port = 7000;
+// 	int port = 7000;
 
-	if( argc >= 2 )
-		port = std::atoi( argv[1] );
+// 	if( argc >= 2 )
+// 		port = std::atoi( argv[1] );
 
-    osc::RunReceiveTest( port );
+//     osc::RunReceiveTest( port );
 
-    return 0;
-}
+//     return 0;
+// }
 
 #endif /* NO_OSC_TEST_MAIN */
 

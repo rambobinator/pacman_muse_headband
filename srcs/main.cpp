@@ -1,7 +1,15 @@
 #include "../includes/LibSFML.hpp"
+#include "../osc/tests/OscReceiveTest.h"
 #include "map.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
+#include <iostream>
+#include <thread>
+
+void	thread(void)
+{
+	osc::RunReceiveTest(5002);
+}
 
 int		main(int ac, char **av)
 {
@@ -13,6 +21,7 @@ int		main(int ac, char **av)
 
 	if (ac != 2)
 		return (-1);
+	std::thread 				first(thread);
 	Map 						map(av[1]);
 	Player						p(1,1, &map);
 	Enemy						e1(1, 3, &map);
