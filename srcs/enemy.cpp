@@ -17,9 +17,9 @@ int		getOpposite(int i)
 
 int		Enemy::Astar(void)
 {
-	int	zone[RANGE][RANGE];
-	int	y;
-	int	x;
+	// int	zone[RANGE][RANGE];
+	// int	y;
+	// int	x;
 	return (-1);
 }
 

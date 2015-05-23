@@ -51,6 +51,8 @@ using ::__strcmp__;  // avoid error: E2316 '__strcmp__' is not a member of 'std'
 #include "ip/UdpSocket.h"
 #include "osc/OscPacketListener.h"
 
+extern int g_blink;
+
 
 namespace osc{
 
@@ -71,23 +73,25 @@ protected:
                 int     a;
 
                 args >> a >> osc::EndMessage;
-
-                std::cout << "received '/blink' message with arguments: "
+                if (a == 1){
+                    g_blink = 1;
+                    std::cout << "received '/blink' message with arguments: "
                         << a << "\n";
+                }
             }
             else if (std::strcmp( m.AddressPattern(), "/muse/elements/experimental/concentration" ) == 0){
                 float   f;
 
                 args >> f >> osc::EndMessage;
-                std::cout << "received '/concentration' message with arguments: "
-                        << f << "\n";
+                // std::cout << "received '/concentration' message with arguments: "
+                //         << f << "\n";
             }
             else if (std::strcmp( m.AddressPattern(), "/muse/elements/experimental/mellow" ) == 0){
                 float   f;
 
                 args >> f >> osc::EndMessage;
-                std::cout << "received '/mellow' message with arguments: "
-                        << f << "\n";
+                // std::cout << "received '/mellow' message with arguments: "
+                //         << f << "\n";
             }
         }catch( Exception& e ){
             std::cout << "error while parsing message: "

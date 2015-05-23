@@ -4,12 +4,15 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include <iostream>
+#include <csignal>
 #include <thread>
 
 void	thread(void)
 {
 	osc::RunReceiveTest(5002);
 }
+
+int		g_blink = 0;
 
 int		main(int ac, char **av)
 {
@@ -80,10 +83,16 @@ int		main(int ac, char **av)
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			{
 				window.close();
+				std::raise(SIGINT);
+				first.join();
 				return (0);
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
 				p.setDir(3);
+				std::cout << " Blink : "<< g_blink << std::endl;
+				g_blink = 0;
+			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				p.setDir(1);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
