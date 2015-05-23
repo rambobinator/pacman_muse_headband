@@ -7,12 +7,39 @@
 #include <csignal>
 #include <thread>
 
+#define CHAR_PATH "assets/pac_sprite.png"
+#define WALL 7
+#define ME 9
+#define BAD1 0
+
 void	thread(void)
 {
 	osc::RunReceiveTest(5002);
 }
 
 int		g_blink = 0;
+
+static sf::Sprite	*get_sprites(char const *file, int x_max, int y_max, int s_x, int s_y)
+{
+	int				len = x_max * y_max;
+	sf::Texture		*textures = new sf::Texture[len];
+	sf::Sprite		*sprites = new sf::Sprite[len];
+	int				i = -1;
+	int				y = -1;
+	int				x = -1;
+
+	while (++y < y_max)
+	{
+		x = -1;
+		while (++x < x_max)
+		{
+			i++;
+			textures[i].loadFromFile(file, sf::IntRect(x * s_x, y * s_y, s_x, s_y));
+			sprites[i].setTexture(textures[i]);
+		}
+	}
+	return (sprites);
+}
 
 int		main(int ac, char **av)
 {
@@ -26,6 +53,8 @@ int		main(int ac, char **av)
 		return (-1);
 	std::thread 				first(thread);
 	Map 						map(av[1]);
+	sf::Sprite					*characters = get_sprites(CHAR_PATH, 5, 3, map.getX(), map.getY());
+	(void)characters;
 	Player						p(1,1, &map);
 	Enemy						e1(1, 3, &map, &p);
 
@@ -37,6 +66,10 @@ int		main(int ac, char **av)
 	while (1)
 	{
 		rectangle.setPosition(position);
+		characters[WALL].setPosition(position);
+		characters[ME].setPosition(position);
+		characters[ME].setRotation(0);
+		characters[BAD1].setPosition(position);
 		window.clear();
 
 		/*DRAW MAP*/
@@ -49,25 +82,22 @@ int		main(int ac, char **av)
 				rectangle.setFillColor(sf::Color(250, 250, 250));
 				if (*it2 != '0')
 				{
-					window.draw(rectangle);
+					window.draw(characters[WALL]);
 				}
 				if (y == p.y && x == p.x)
 				{
-					rectangle.setFillColor(sf::Color(100, 250, 50));
-					window.draw(rectangle);
+					characters[ME].move(map.getX() * x, map.getY() * y);
+					window.draw(characters[ME]);
 				}
 				if (y == e1.y && x == e1.x)
 				{
-					rectangle.setFillColor(sf::Color(250, 0, 0));
-					window.draw(rectangle);
+					characters[BAD1].move(map.getX() * x, map.getY() * y);
+					window.draw(characters[BAD1]);
 				}
-				// if (y == e2.y && x == e2.x)
-				// {
-				// 	rectangle.setFillColor(sf::Color(250, 0, 0));
-				// 	window.draw(rectangle);
-				// }
+				characters[WALL].move(map.getX(), 0);
 				rectangle.move(map.getX(), 0);
 			}
+			characters[WALL].move(-(map.getX() * x), map.getY());
 			rectangle.move(-(map.getX() * x), map.getY());
 		}
 
