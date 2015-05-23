@@ -8,12 +8,15 @@
 class Enemy : public Player
 {
 	public:
-		Enemy(int y, int x, Map *map, Player *p);
+		Enemy(int y, int x, Map *map, Player *p, int sprite);
 		~Enemy();
 		Enemy &		operator=( Enemy const & rhs );
 		void		ia();
 		int			getDir();
 		int			Astar();
+		void		move(void);
+		int			sprite;
+		bool		state;
 
 	private:
 		Player	*p;

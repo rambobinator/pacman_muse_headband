@@ -14,8 +14,10 @@ public:
 	int		size;
 };
 
-Enemy::Enemy(int y, int x, Map *map, Player *new_p) : Player(y, x, map){
+Enemy::Enemy(int y, int x, Map *map, Player *new_p, int new_sprite) : Player(y, x, map){
 	p = new_p;
+	sprite = new_sprite;
+	state = false;
 }
 
 Enemy::~Enemy(){
@@ -215,6 +217,24 @@ int		Enemy::Astar(void)
 	}
 	std::cout << std::endl;
 	return (-1);
+}
+
+void	Enemy::move(void)
+{
+	float	dirs[4][2] = 
+	{
+		{-1, 0},
+		{0, 1},
+		{1, 0},
+		{0, -1}
+	};
+	state = (state) ? false : true;
+	if (state)
+		return ;
+	if (map->colision(y, (x + dirs[dir][1])) == '0')
+		x += dirs[dir][1];
+	if (map->colision((y + dirs[dir][0]), x) == '0')
+		y += dirs[dir][0];
 }
 
 int		Enemy::getDir(void)

@@ -8,12 +8,26 @@
 #include <thread>
 
 #define CHAR_PATH "assets/pac_sprite.png"
-#define WALL 7
-#define ME 9
-#define BAD1 0
-#define BAD2 1
-#define BAD3 2
-#define BAD4 3
+#define ELEM_PATH "assets/pac_elem_sprite.png"
+enum	chararacters_code
+{
+	RED,
+	PINK,
+	CYAN,
+	ORANGE,
+	SICK,
+	OL,
+	OU,
+	OD,
+	OR,
+	NAN,
+	CL,
+	CU,
+	CD,
+	CR,
+	NAN2,
+	CHAR_NBR
+};
 
 void	thread(void)
 {
@@ -48,38 +62,30 @@ static sf::Sprite	*get_sprites(char const *file, int x_max, int y_max, int s_x, 
 int		main(int ac, char **av)
 {
 	sf::RenderWindow			window(sf::VideoMode(WIN_SZ, WIN_SZ), av[0]);
-	sf::RectangleShape			rectangle(sf::Vector2f(0, 0));
 	std::vector<std::string>	raw_map;
 	int							x;
 	int							y;
+	int							sp = 0;
+	int							i = -1;
 
 	if (ac != 2)
 		return (-1);
 	std::thread 				first(thread);
 	Map 						map(av[1]);
 	sf::Sprite					*characters = get_sprites(CHAR_PATH, 5, 3, map.getX(), map.getY());
-	(void)characters;
+	sf::Sprite					*elements = get_sprites(ELEM_PATH, 5, 3, map.getX(), map.getY());
 	Player						p(1,1, &map);
-	Enemy						e1(1, 3, &map, &p);
-	Enemy						e2(13, 1, &map, &p);
-	// Enemy						e2(13, 1, &map);
-	// Enemy						e2(13, 1, &map);
-
+	Enemy						e1(6, 8, &map, &p, RED);
+	Enemy						e2(7, 8, &map, &p, PINK);
 
 	raw_map = map.getRawMap();
-	sf::Vector2f position = rectangle.getPosition();
-	rectangle.setSize(sf::Vector2f(map.getX(), map.getY()));
+	sf::Vector2f position(0, 0);
 	while (1)
 	{
-		rectangle.setPosition(position);
-		characters[WALL].setPosition(position);
-		characters[ME].setPosition(position);
-		characters[ME].setRotation(0);
-		characters[BAD1].setPosition(position);
-		characters[BAD2].setPosition(position);
-		characters[BAD3].setPosition(position);
-		characters[BAD4].setPosition(position);
-
+		elements[7].setPosition(position);
+		i = -1;
+		while (++i < CHAR_NBR)
+			characters[i].setPosition(position);
 		window.clear();
 
 		/*DRAW MAP*/
@@ -89,33 +95,52 @@ int		main(int ac, char **av)
 			x = 0;
 			for ( std::string::iterator it2 = (*it).begin(); it2 != (*it).end(); ++it2, x++)
 			{
-				rectangle.setFillColor(sf::Color(250, 250, 250));
 				if (*it2 != '0')
 				{
-					window.draw(characters[WALL]);
+					window.draw(elements[7]);
 				}
 				if (y == p.y && x == p.x)
 				{
-					characters[ME].move(map.getX() * x, map.getY() * y);
-					window.draw(characters[ME]);
+					sp = (sp) ? 0 : 5;
+					if (p.dir == 3)
+					{
+						characters[OL + sp].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[OL + sp]);
+					}
+					else if (p.dir == 0)
+					{
+						characters[OU + sp].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[OU + sp]);
+					}
+					else if (p.dir == 2)
+					{
+						characters[OD + sp].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[OD + sp]);
+					}
+					else
+					{
+						characters[OR + sp].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[OR + sp]);
+					}
 				}
 				if (y == e1.y && x == e1.x)
 				{
-					characters[BAD1].move(map.getX() * x, map.getY() * y);
-					window.draw(characters[BAD1]);
+					characters[e1.sprite].move(map.getX() * x, map.getY() * y);
+					window.draw(characters[e1.sprite]);
 				}
 				if (y == e2.y && x == e2.x)
 				{
-					characters[BAD2].move(map.getX() * x, map.getY() * y);
-					window.draw(characters[BAD2]);
+					characters[e2.sprite].move(map.getX() * x, map.getY() * y);
+					window.draw(characters[e2.sprite]);
 				}
-				characters[WALL].move(map.getX(), 0);
-				rectangle.move(map.getX(), 0);
+				elements[7].move(map.getX(), 0);
 			}
-			characters[WALL].move(-(map.getX() * x), map.getY());
-			rectangle.move(-(map.getX() * x), map.getY());
+			elements[7].move(-(map.getX() * x), map.getY());
 		}
 
+		/*SOUND*/
+		
+		
 		/*EVENT CATCH*/
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -142,10 +167,10 @@ int		main(int ac, char **av)
 				p.setDir(0);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 				p.setDir(2);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				p.move();
 		}
 		/*MUSE EVENT*/
-
-
 
 		
 		p.move();
