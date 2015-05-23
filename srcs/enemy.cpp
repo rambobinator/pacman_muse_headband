@@ -1,6 +1,6 @@
 #include "Enemy.hpp"
 #include <time.h>
-#define RANGE 7
+#define RANGE 13
 
 class Point {
 public:
