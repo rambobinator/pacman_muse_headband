@@ -39,6 +39,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <ctime>
+#include <cmath>
 
 #if defined(__BORLANDC__) // workaround for BCB4 release build intrinsics bug
 namespace std {
@@ -52,7 +54,9 @@ using ::__strcmp__;  // avoid error: E2316 '__strcmp__' is not a member of 'std'
 #include "osc/OscPacketListener.h"
 
 extern int g_blink;
+extern int g_berserk;
 
+time_t      old_t = 0;
 
 namespace osc{
 
@@ -68,21 +72,28 @@ protected:
             // examples below.
             ReceivedMessageArgumentStream args = m.ArgumentStream();
             // ReceivedMessage::const_iterator arg = m.ArgumentsBegin();
-            
+
             if( std::strcmp( m.AddressPattern(), "/muse/elements/blink" ) == 0 ){
                 int     a;
 
                 args >> a >> osc::EndMessage;
                 if (a == 1){
                     g_blink = 1;
-                    std::cout << "received '/blink' message with arguments: "
-                        << a << "\n";
+                    // std::cout << "received '/blink' message with arguments: "
+                    //     << a << "\n";
                 }
             }
             else if (std::strcmp( m.AddressPattern(), "/muse/elements/experimental/concentration" ) == 0){
                 float   f;
+                double  t;
 
                 args >> f >> osc::EndMessage;
+                if (old_t == 0)
+                    old_t = time(NULL);
+                if ((t = difftime(std::time(NULL), old_t)) > 3) { 
+                    time(&old_t);
+                    g_berserk = std::lroundf(f);
+                }
                 // std::cout << "received '/concentration' message with arguments: "
                 //         << f << "\n";
             }

@@ -13,6 +13,7 @@ void	thread(void)
 }
 
 int		g_blink = 0;
+int		g_berserk = 0;
 
 int		main(int ac, char **av)
 {
@@ -90,7 +91,10 @@ int		main(int ac, char **av)
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				p.setDir(3);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
 				p.setDir(1);
+				std::cout << "Berserk: " << g_berserk << std::endl;
+			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				p.setDir(0);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
