@@ -17,6 +17,8 @@ Map::Map(std::string const filename)
     	}
     }
     file.close();
+    x = len;
+    y = _raw_map.size();
     _tile_sz_y = WIN_SZ / _raw_map.size();
     _tile_sz_x = WIN_SZ / len;
 }
