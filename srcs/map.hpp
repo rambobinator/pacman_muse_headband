@@ -18,6 +18,8 @@ class Map
 		int			getX(void) const;
 		int			getY(void) const;
 		std::vector<std::string>	getRawMap(void) const;
+		int							y;
+		int							x;
 
 	private:
 		std::vector< std::string >	_raw_map;
