@@ -220,6 +220,7 @@ int		main(int ac, char **av)
 		/*MUSE EVENT*/
 		if (g_blink)
 		{
+			g_blink = 0;
 			filter.setFillColor(sf::Color(0, 0, 0, 150));
 			p.move();
 		}
