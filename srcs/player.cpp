@@ -3,6 +3,7 @@
 Player::Player(int y, int x, Map *map) : x(x), y(y), map(map)
 {
 	dir = 0;
+	life = 3;
 }
 
 Player::~Player( void )

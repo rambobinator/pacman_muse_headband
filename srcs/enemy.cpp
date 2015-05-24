@@ -1,6 +1,8 @@
 #include "Enemy.hpp"
 #include <time.h>
 #define RANGE 13
+#define HOME_X 10
+#define HOME_Y 10
 
 class Point {
 public:
@@ -18,6 +20,9 @@ Enemy::Enemy(int y, int x, Map *map, Player *new_p, int new_sprite) : Player(y, 
 	p = new_p;
 	sprite = new_sprite;
 	state = false;
+	dead = false;
+	home_x = x;
+	home_y = y;
 }
 
 Enemy::~Enemy(){
@@ -80,7 +85,6 @@ Tab		min_tab(Tab tab0, Tab tab1, Tab tab2, Tab tab3)
 		min2 = tab2;
 	else
 		min2 = tab3;
-
 	if (min1.size == -1){
 		// std::cout << "size " <<min2.size << std::endl;
 		return (min2);
@@ -149,8 +153,60 @@ Tab		rec_dir(Tab tab, Point now, Point pac, int (*zone)[RANGE][RANGE])
 		return (tab4);
 }
 
+int		Enemy::AstarDeath(void)
+{
+	int	zone[RANGE][RANGE];
+	Point home;
+	Tab	start;
+	Tab	result;
+	Point	tmp;
+	int	y;
+	int	x;
+	int zx, zy ;
+
+	for (x = this->x - (RANGE/2), zx=0 ; x <= this->x + (RANGE/2) ; x++, zx++) {
+		for (y = this->y - (RANGE/2) , zy=0 ; y <= this->y + (RANGE/2) ; y++, zy++) {
+			if ((x > 0 && x < map->x && y >= 0 && y < map->y)
+				&& map->colision(y, x) == '0') {
+				if (x == this->x && y == this->y) {
+					zone[zx][zy] = 2 ;
+				}
+				else if (x == p->x && y == p->y) {
+					zone[zx][zy] = 1;
+				}
+				else if (x == home_x && y == home_y)
+				{
+					home.x = zx;
+					home.y = zy;
+				}
+				else {
+					zone[zx][zy] = 0 ;
+				}
+			}
+			else {
+				zone[zx][zy] = -1 ;
+			}
+		}
+	}
+	start.size = 0;
+	tmp.x = tmp.y = RANGE / 2;
+	result = rec_dir(start, tmp, home, &zone);
+	if (result.size == -1)
+		return (-1);
+	else if (result.tab[1].x - (RANGE / 2) > 0)
+		return (1);
+	else if (result.tab[1].x - (RANGE / 2) < 0)
+		return (3);
+	else if (result.tab[1].y - (RANGE / 2) > 0)
+		return (2);
+	else
+		return (0);
+	return (-1);
+}
+
 int		Enemy::Astar(void)
 {
+	extern int g_berserk;
 	int	zone[RANGE][RANGE];
 	int	is_pac;
 	Point pac;
@@ -161,6 +217,8 @@ int		Enemy::Astar(void)
 	int	x;
 	int zx, zy ;
 
+//	g_berserk = 1;  FOR TEST AND DEMO
+	
 	is_pac = 0;
 	for (x = this->x - (RANGE/2), zx=0 ; x <= this->x + (RANGE/2) ; x++, zx++) {
 		for (y = this->y - (RANGE/2) , zy=0 ; y <= this->y + (RANGE/2) ; y++, zy++) {
@@ -193,31 +251,60 @@ int		Enemy::Astar(void)
 	if (result.size == -1)
 		return (-1);
 	else if (result.tab[1].x - (RANGE / 2) > 0)
-		return (1);
-	else if (result.tab[1].x - (RANGE / 2) < 0)
-		return (3);
-	else if (result.tab[1].y - (RANGE / 2) > 0)
-		return (2);
-	else
-		return (0);
-
-	y = RANGE;
-	while (y--)
 	{
-		x = RANGE;
-		std::cout << y << ((y > 9) ? " " : "  ");
-		while (x--)
-		{
-			if (zone[y][x] >= 0)
-				std::cout << zone[y][x];
-			else
-				std::cout << '_';
-		}
-		std::cout << std::endl;
+		if (!g_berserk)
+			return (1);
+		else if (map->colision(this->y, this->x - 1) == '0')
+			return (3);
+		else if (map->colision(this->y - 1, this->x) == '0')
+			return (0);
+		else if (map->colision(this->y + 1, this->x) == '0')
+			return (2);
+		else
+			return (1);
 	}
-	std::cout << std::endl;
+	else if (result.tab[1].x - (RANGE / 2) < 0)
+	{
+		if (!g_berserk)
+			return (3);
+		else if (map->colision(this->y, this->x + 1) == '0')
+			return (1);
+		else if (map->colision(this->y - 1, this->x) == '0')
+			return (0);
+		else if (map->colision(this->y + 1, this->x) == '0')
+			return (2);
+		else
+			return (3);
+	}
+	else if (result.tab[1].y - (RANGE / 2) > 0)
+	{
+		if (!g_berserk)
+			return (2);
+		else if (map->colision(this->y - 1, this->x) == '0')
+			return (0);
+		else if (map->colision(this->y, this->x + 1) == '0')
+			return (1);
+		else if (map->colision(this->y, this->x - 1) == '0')
+			return (3);
+		else
+			return (2);
+	}
+	else
+	{		
+		if (!g_berserk)
+			return (0);
+		else if (map->colision(this->y + 1, this->x) == '0')
+			return (2);
+		else if (map->colision(this->y, this->x + 1) == '0')
+			return (1);
+		else if (map->colision(this->y, this->x - 1) == '0')
+			return (3);
+		else
+			return (0);
+	}
 	return (-1);
 }
+
 
 void	Enemy::move(void)
 {
@@ -228,6 +315,11 @@ void	Enemy::move(void)
 		{1, 0},
 		{0, -1}
 	};
+	if (x == p->x && y == p->y)
+	{
+		dead = true;
+		return;
+	}
 	state = (state) ? false : true;
 	if (state)
 		return ;
@@ -275,7 +367,9 @@ int		Enemy::getDir(void)
 
 void	Enemy::ia(void)
 {
-	int	new_dir = Astar();
+	if (x >= 8 && x < 12 && y >= 6 && y < 10)
+		dead = false;
+	int	new_dir = (dead) ? AstarDeath() : Astar();
 
 	dir = (new_dir != -1) ? new_dir : getDir();
 	if (dir != -1)

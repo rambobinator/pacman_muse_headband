@@ -10,6 +10,7 @@ class Player
 		Player(int y, int x, Map *map);
 		~Player();
 		Player &		operator=( Player const & rhs );
+		int				life;
 		int				x;
 		int				y;
 		int				dir;

@@ -14,9 +14,13 @@ class Enemy : public Player
 		void		ia();
 		int			getDir();
 		int			Astar();
+		int			AstarDeath(void);
 		void		move(void);
 		int			sprite;
 		bool		state;
+		int			home_x;
+		int			home_y;
+		bool		dead;
 
 	private:
 		Player	*p;

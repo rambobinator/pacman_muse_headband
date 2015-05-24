@@ -17,7 +17,7 @@ CFLAGS = -stdlib=libc++ -Wall -Wextra -Werror -g
 COMPILED_OBJ = $(SRC:.cpp=.o)
 SFML = SFML2
 
-LIBS = png GLEW jpeg sfml-audio-s sfml-graphics-s sfml-network-s sfml-system-s sfml-window-s
+LIBS = png GLEW jpeg sfml-audio-s sfml-graphics-s sfml-network-s sfml-system-s sfml-window-s 
 COMPILED_LIBS = $(shell for l in $(LIBS); do echo '-l'$$l; done)
 
 LIBS_DIRS = SFML2/lib libs

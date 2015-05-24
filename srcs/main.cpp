@@ -20,12 +20,12 @@ enum	chararacters_code
 	OU,
 	OD,
 	OR,
-	NAN,
+	DEAD1,
 	CL,
 	CU,
 	CD,
 	CR,
-	NAN2,
+	DEAD2,
 	CHAR_NBR
 };
 
@@ -62,6 +62,17 @@ static sf::Sprite	*get_sprites(char const *file, int x_max, int y_max, int s_x, 
 int		main(int ac, char **av)
 {
 	sf::RenderWindow			window(sf::VideoMode(WIN_SZ, WIN_SZ), av[0]);
+	sf::Font					font;
+	std::string					score = "score :";
+	std::string					life = "life :";
+	sf::Text 					text;
+	sf::Text 					text2;
+	font.loadFromFile("/Library/Fonts/Arial Black.ttf");
+	text.setFont(font);
+	text.setColor(sf::Color::Yellow);
+	text2.setFont(font);
+	text2.setColor(sf::Color::Yellow);
+	sf::RectangleShape 			filter(sf::Vector2f(WIN_SZ, WIN_SZ));
 	std::vector<std::string>	raw_map;
 	int							x;
 	int							y;
@@ -80,14 +91,17 @@ int		main(int ac, char **av)
 
 	raw_map = map.getRawMap();
 	sf::Vector2f position(0, 0);
+	text.setPosition(0, 460);
+	text2.setPosition(300, 460);
 	while (1)
 	{
+		text.setString(score);
+		text2.setString(life);
 		elements[7].setPosition(position);
 		i = -1;
 		while (++i < CHAR_NBR)
 			characters[i].setPosition(position);
 		window.clear();
-
 		/*DRAW MAP*/
 		y = 0;
 		for (std::vector<std::string>::iterator it = raw_map.begin() ; it != raw_map.end(); ++it, y++)
@@ -125,19 +139,49 @@ int		main(int ac, char **av)
 				}
 				if (y == e1.y && x == e1.x)
 				{
-					characters[e1.sprite].move(map.getX() * x, map.getY() * y);
-					window.draw(characters[e1.sprite]);
+					if (e1.dead && (e1.dir == 0 || e1.dir == 2)){
+						characters[DEAD1].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[DEAD1]);
+					}
+					else if (e1.dead && (e1.dir == 1 || e1.dir == 3)){
+						characters[DEAD2].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[DEAD2]);
+					}
+					else if (g_berserk){
+						characters[SICK].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[SICK]);
+					}
+					else{
+						characters[e1.sprite].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[e1.sprite]);
+					}
 				}
 				if (y == e2.y && x == e2.x)
 				{
-					characters[e2.sprite].move(map.getX() * x, map.getY() * y);
-					window.draw(characters[e2.sprite]);
+					if (e2.dead && (e2.dir == 0 || e2.dir == 2)){
+						characters[DEAD1].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[DEAD1]);
+					}
+					else if (e2.dead && (e2.dir == 1 || e2.dir == 3)){
+						characters[DEAD2].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[DEAD2]);
+					}
+					else if (g_berserk){
+						characters[SICK].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[SICK]);
+					}
+					else{
+						characters[e2.sprite].move(map.getX() * x, map.getY() * y);
+						window.draw(characters[e2.sprite]);
+					}
 				}
 				elements[7].move(map.getX(), 0);
 			}
 			elements[7].move(-(map.getX() * x), map.getY());
 		}
-
+		filter.setFillColor(sf::Color(0, 0, 250, 0));
+		if (g_berserk)
+			filter.setFillColor(sf::Color(0, 0, 250, 80));
 		/*SOUND*/
 		
 		
@@ -168,14 +212,23 @@ int		main(int ac, char **av)
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 				p.setDir(2);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			{
+				filter.setFillColor(sf::Color(0, 0, 0, 150));
 				p.move();
+			}
 		}
 		/*MUSE EVENT*/
-
-		
+		if (g_blink)
+		{
+			filter.setFillColor(sf::Color(0, 0, 0, 150));
+			p.move();
+		}
 		p.move();
 		e1.ia();
 		e2.ia();
+		window.draw(text);
+		window.draw(text2);
+		window.draw(filter);
 		window.display();
 		sf::sleep(sf::milliseconds(100));
 	}
